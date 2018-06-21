@@ -1,0 +1,246 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Pang</title>
+</head>
+<script src="pixi.min.js"></script>
+<body>
+<script type="text/javascript">
+
+  var app = new PIXI.Application(900, 550, {backgroundColor: 0xa7a7b7});
+  document.body.appendChild(app.view);
+  //000000 pour le noir
+
+
+  var bunny = PIXI.Sprite.fromImage('boule.png');
+  var baton = PIXI.Sprite.fromImage('baton.png');
+  var milieu = PIXI.Sprite.fromImage('milieu.png');
+  var baton2 = PIXI.Sprite.fromImage('baton.png');
+
+  alert("Prêt ?")
+
+
+
+  document.addEventListener('keydown', function(event) {
+    if (event.code == 'KeyW') {
+      baton.y-=40
+    }
+    if (event.code == 'KeyS') {
+      baton.y+=40;
+    }
+    if (event.code == 'KeyD') {
+      {if (baton.x > app.screen.width /2.1)
+        baton.x-=0;
+      else baton.x+=10
+      }
+    }
+    if (event.code == 'KeyA') {
+      baton.x-=40;
+    }
+
+    if (event.code == 'Numpad8') {
+      baton2.y-=40;
+    }
+    if (event.code == 'Numpad5') {
+      baton2.y+=40;
+    }
+
+    if (event.code == 'Numpad4') {
+      {if (baton2.x < app.screen.width /1.9 )
+        baton2.x+=0;
+      else baton2.x-=10
+      }
+    }
+    if (event.code == 'Numpad6') {
+      baton2.x+=40;
+    }
+  });
+
+
+
+
+
+  // center the sprite's anchor point
+  bunny.anchor.set(0.5);
+  milieu.anchor.set(0.5);
+  baton2.anchor.set(0.9);
+  // move the sprite to the center of the screen
+  bunny.x = app.screen.width / 2;
+  bunny.y = app.screen.height / 2;
+  baton.x = app.screen.width * 0.1;
+  baton.y = app.screen.height / 2.5;
+  milieu.x = app.screen.width /2;
+  milieu.y = app.screen.height /2;
+  baton2.x = app.screen.width * 0.9;
+  baton2.y = app.screen.height /1.7;
+
+
+  app.stage.addChild(bunny);
+  app.stage.addChild(baton);
+  app.stage.addChild(milieu);
+  app.stage.addChild(baton2);
+
+
+  var speedX = 10;
+  var  speedY = 1;
+
+  var velocityX = speedX;
+  var velocityY = -speedY;
+
+  var scoreJ1 = 0;
+  var scoreJ2 = 0;
+
+
+
+  var style = new PIXI.TextStyle({
+    fontFamily: 'Arial',
+    fontSize: 36,
+    fontStyle: 'italic',
+    fontWeight: 'bold',
+    fill: ['#ffffff', '#00ff99'], // gradient
+    stroke: '#4a1850',
+    strokeThickness: 5,
+    dropShadow: true,
+    dropShadowColor: '#000000',
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+    wordWrap: true,
+    wordWrapWidth: 440
+  });
+
+  var richText = new PIXI.Text('J1', style);
+  richText.x = 0;
+  richText.y = 0;
+
+  app.stage.addChild(richText);
+
+
+  var style = new PIXI.TextStyle({
+    fontFamily: 'Arial',
+    fontSize: 36,
+    fontStyle: 'italic',
+    fontWeight: 'bold',
+    fill: ['#ffffff', '#00ff99'], // gradient
+    stroke: '#4a1850',
+    strokeThickness: 5,
+    dropShadow: true,
+    dropShadowColor: '#000000',
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+    wordWrap: true,
+    wordWrapWidth: 440
+  });
+
+  var basicText1 = new PIXI.Text(scoreJ1);
+  basicText1.x = 100;
+  basicText1.y = 90;
+
+  app.stage.addChild(basicText1);
+
+  var basicText2 = new PIXI.Text(scoreJ2);
+  basicText2.x = 800;
+  basicText2.y = 90;
+
+  app.stage.addChild(basicText2);
+
+  var richText = new PIXI.Text('J2', style);
+  richText.x = app.screen.width-50;
+  richText.y = app.screen.height-550;
+
+  app.stage.addChild(richText);
+
+  // Listen for animate update
+  app.ticker.add(function(delta) {
+
+
+    if (bunny.x > baton2.x-6  && bunny.y > baton2.y - 102 && bunny.y < baton2.y) {
+      velocityX = -speedX;
+      velocityY = -speedY * 1.5;
+    }
+    if (bunny.x > baton2.x-6  && bunny.y > baton2.y - 51 && bunny.y < baton2.y) {
+      velocityX = -speedX;
+      velocityY = speedY * 1.5;
+    }
+
+    if (bunny.x < baton.x+6  && bunny.y < baton.y + 102 && bunny.y > baton.y) {
+      velocityX = speedX;
+      velocityY = speedY * 1.5;
+    }
+
+    if (bunny.x < baton.x+6  && bunny.y < baton.y + 51 && bunny.y > baton.y) {
+      velocityX = speedX;
+      velocityY = -speedY * 1.5;
+    }
+
+    if (bunny.y > app.screen.height){
+      velocityY = speedY * 2;
+    }
+
+    if (bunny.y < 0){
+      velocityY = -speedY * 2;
+    }
+    bunny.x += velocityX * delta;
+    bunny.y += velocityY * delta;
+
+    speedX += 0.02 * delta ;
+
+    if (bunny.x < 0) {
+      console.log("J2 Win");
+      bunny.x = app.screen.width /2;
+      bunny.y = app.screen.height /2;
+      velocityX = 10;
+      velocityY = 1;
+      speedX = 10;
+      speedY = 1;
+      baton2.x = app.screen.width * 0.9;
+      baton2.y = app.screen.height /1.7;
+      baton.x = app.screen.width * 0.1;
+      baton.y = app.screen.height / 2.5;
+      scoreJ2 += +1;
+      basicText2.setText(scoreJ2);
+
+
+    }
+
+    if (bunny.x > app.screen.width) {
+      console.log("J1 Win");
+      bunny.x = app.screen.width /2;
+      bunny.y = app.screen.height /2;
+      speedX = 10;
+      speedY = -1;
+      baton2.x = app.screen.width * 0.9;
+      baton2.y = app.screen.height /1.7;
+      baton.x = app.screen.width * 0.1;
+      baton.y = app.screen.height / 2.5;
+      scoreJ1 += +1;
+      basicText1.setText(scoreJ1);
+    }
+    if (scoreJ1 >=5) {
+      alert("J1 Win ! " +
+        "Encore une partie ?");
+      location.reload();
+    }
+    if (scoreJ2 >=5) {
+      alert("J2 Win ! " +
+        "Encore une partie ?");
+      location.reload();
+    }
+
+
+
+
+  });
+
+
+
+
+</script>
+</body>
+</html>
+
+
+
+
